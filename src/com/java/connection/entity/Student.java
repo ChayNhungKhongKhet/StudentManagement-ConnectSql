@@ -1,5 +1,7 @@
 package com.java.connection.entity;
 
+import com.java.connection.dao.StudentDao;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -7,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 public class Student {
@@ -18,7 +21,7 @@ public class Student {
     private char gender;
     private ZonedDateTime dob;
 
-    public Student(int ID, String first_name, String last_name, String city, double average_score, char gender, ZonedDateTime dob) {
+    public Student(int ID, String last_name, String first_name, String city, double average_score, char gender, ZonedDateTime dob) {
         this.ID = ID;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -39,6 +42,10 @@ public class Student {
         LocalDate dob=LocalDate.parse(dobString,DateTimeFormatter.ISO_LOCAL_DATE);
         ZonedDateTime zonedDateTime=dob.atStartOfDay(ZoneId.of("Asia/Ho_Chi_Minh"));
         this.dob=zonedDateTime;
+    }
+
+    public Student() {
+
     }
 
     @Override
@@ -71,8 +78,17 @@ public class Student {
         return ID;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public boolean setID(int ID) throws SQLException {
+        StudentDao studentDao=new StudentDao();
+        List<Student> studentList= studentDao.findAll();
+        for (Student stn: studentList) {
+            if (stn.getID() == ID) {
+                System.err.println("Student exist !!!");
+                return false;
+            }
+        }
+        this.ID=ID;
+        return true;
     }
 
     public String getFirst_name() {
@@ -103,8 +119,15 @@ public class Student {
         return average_score;
     }
 
-    public void setAverage_score(double average_score) {
-        this.average_score = average_score;
+    public boolean setAverage_score(float average_score) {
+        if (average_score>10 || average_score<0){
+            System.err.println("Score is [0-10]");
+            return false;
+        }
+        else {
+            this.average_score = average_score;
+            return true;
+        }
     }
 
     public char getGender() {
