@@ -1,5 +1,6 @@
 package com.java.connection.entity;
 
+import com.java.connection.dao.ClassDao;
 import com.java.connection.dao.StudentDao;
 
 import java.sql.ResultSet;
@@ -14,34 +15,41 @@ import java.util.Objects;
 
 public class Student {
     private int ID;
-    private String first_name;
     private String last_name;
+    private String first_name;
     private String city;
     private double average_score;
     private char gender;
-    private ZonedDateTime dob;
+    private LocalDate dob;
+    private Class studentClass;
 
-    public Student(int ID, String last_name, String first_name, String city, double average_score, char gender, ZonedDateTime dob) {
+    public Student(int ID, String first_name, String last_name, String city, double average_score, char gender, LocalDate dob) {
         this.ID = ID;
-        this.first_name = first_name;
         this.last_name = last_name;
+        this.first_name = first_name;
         this.city = city;
         this.average_score = average_score;
         this.gender = gender;
         this.dob = dob;
+
     }
+
 
     public Student(ResultSet resultSet) throws SQLException {
         this.ID = resultSet.getInt(1);
-        this.first_name = resultSet.getString(2);
-        this.last_name = resultSet.getString(3);
+        this.last_name = resultSet.getString(2);
+        this.first_name = resultSet.getString(3);
         this.city = resultSet.getString(4);
         this.average_score = resultSet.getDouble(5);
         this.gender = resultSet.getString(6).charAt(0);
         String dobString=resultSet.getString(7);
         LocalDate dob=LocalDate.parse(dobString,DateTimeFormatter.ISO_LOCAL_DATE);
-        ZonedDateTime zonedDateTime=dob.atStartOfDay(ZoneId.of("Asia/Ho_Chi_Minh"));
-        this.dob=zonedDateTime;
+        this.dob=dob;
+        int class_id = resultSet.getInt(8);
+        ClassDao classDao=new ClassDao();
+        Class studentClass=classDao.findByID(class_id);
+        this.studentClass=studentClass;
+
     }
 
     public Student() {
@@ -65,12 +73,13 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "ID=" + ID +
-                ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
+                ", first_name='" + first_name + '\'' +
                 ", city='" + city + '\'' +
                 ", average_score=" + average_score +
                 ", gender=" + gender +
                 ", dob=" + dob +
+                ", studentClass=" + studentClass +
                 '}';
     }
 
@@ -78,17 +87,8 @@ public class Student {
         return ID;
     }
 
-    public boolean setID(int ID) throws SQLException {
-        StudentDao studentDao=new StudentDao();
-        List<Student> studentList= studentDao.findAll();
-        for (Student stn: studentList) {
-            if (stn.getID() == ID) {
-                System.err.println("Student exist !!!");
-                return false;
-            }
-        }
+    public void setID(int ID) throws SQLException {
         this.ID=ID;
-        return true;
     }
 
     public String getFirst_name() {
@@ -138,12 +138,23 @@ public class Student {
         this.gender = gender;
     }
 
-    public ZonedDateTime getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public void setDob(ZonedDateTime dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
-}
 
+    public void setAverage_score(double average_score) {
+        this.average_score = average_score;
+    }
+
+    public Class getStudentClass() {
+        return studentClass;
+    }
+
+    public void setStudentClass(Class studentClass) {
+        this.studentClass = studentClass;
+    }
+}

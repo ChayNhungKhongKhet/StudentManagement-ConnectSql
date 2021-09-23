@@ -2,12 +2,9 @@ package com.java.connection.service;
 
 import com.java.connection.dao.StudentDao;
 import com.java.connection.entity.Student;
-import com.sun.javafx.iio.gif.GIFImageLoaderFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
@@ -59,7 +56,7 @@ public class StudentService {
     public void addStudent() {
         Student student=inputStudent();
         try {
-            boolean result=studentDao.addStudent(student);
+            boolean result=studentDao.addStudentWithoutClass(student);
             if (result){
                 System.out.println("Add successfully!!!");
             }
@@ -143,22 +140,6 @@ public class StudentService {
     }
     public Student inputStudent (){
         Student student = new Student();
-
-        while (true) {
-            System.out.print("Enter id : ");
-            int ID = sc.nextInt();
-            sc.nextLine();
-            try {
-                if (student.setID(ID)) {
-                    student.setID(ID);
-                    break;
-                } else {
-                    System.out.println("Please retype !!!");
-                }
-            } catch (SQLException e) {
-                System.err.println(e);
-            }
-        }
         System.out.print("Enter first name : ");
         String firs_name = sc.nextLine();
         student.setFirst_name(firs_name);
@@ -186,8 +167,7 @@ public class StudentService {
         student.setGender(gender);
         System.out.print("Enter day of birth : ");
         String dobString = sc.nextLine();
-        LocalDate dobLocal = LocalDate.parse(dobString, DateTimeFormatter.ISO_LOCAL_DATE);
-        ZonedDateTime dob = dobLocal.atStartOfDay(ZoneId.of("Asia/Ho_Chi_Minh"));
+        LocalDate dob = LocalDate.parse(dobString, DateTimeFormatter.ISO_LOCAL_DATE);
         student.setDob(dob);
         return student;
     }

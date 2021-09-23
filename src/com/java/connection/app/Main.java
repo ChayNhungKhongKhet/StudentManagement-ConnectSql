@@ -1,5 +1,7 @@
 package com.java.connection.app;
 
+import com.java.connection.service.ClassService;
+import com.java.connection.service.StudentClassService;
 import com.java.connection.service.StudentService;
 
 import java.sql.SQLException;
@@ -8,12 +10,14 @@ import java.util.Scanner;
 public class Main {
     private static final StudentService studentService = new StudentService();
     private static final Scanner scanner = new Scanner(System.in);
+    private static final ClassService classService = new ClassService();
+    private static  final StudentClassService studentClassService = new StudentClassService();
 
     public static void main(String[] args) throws SQLException {
         System.out.println("Welcome Student management system!");
         showMenu();
         while (true) {
-            System.out.println("Enter funtions");
+            System.out.println("Enter functions");
             int choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
@@ -45,6 +49,30 @@ public class Main {
                     studentService.findByName();
                     break;
                 case 10:
+                    studentClassService.findNumberStudentOfMajor();
+                    break;
+                case 11:
+                    classService.findAll();
+                    break;
+                case 12:
+                    studentClassService.addStudent();
+                    break;
+                case 13:
+                    classService.addClass();
+                    break;
+                case 14:
+                    studentClassService.findAllStudentOfClass();
+                    break;
+                case 15:
+                    studentClassService.findMaxScoreEachClass();
+                    break;
+                case 16:
+                    studentClassService.findNumberStudentEachCity();
+                    break;
+                case 17:
+                    studentClassService.findAllStudentOfMajor();
+                    break;
+                case 18:
                     System.out.println("Good bye.");
                     return;
                 default:

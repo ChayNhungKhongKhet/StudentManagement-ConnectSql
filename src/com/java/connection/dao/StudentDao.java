@@ -6,7 +6,6 @@ import com.java.connection.entity.Student;
 import java.sql.*;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ public class StudentDao {
     public Connection getConnection() {
         if(connection==null)
         try {
-            return DriverManager.getConnection("jdbc:mysql://localhost:3306/studentmanagement","root","kokoko2002@");
+            return DriverManager.getConnection("jdbc:mysql://localhost:3306/StudentClassDatabase","root","kokoko2002@");
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -33,9 +32,9 @@ public class StudentDao {
             connection.close();
         }
     }
-    public boolean addStudent(Student student) throws SQLException {
+    public boolean addStudentWithoutClass(Student student) throws SQLException {
         String dob = student.getDob().format(DateTimeFormatter.ISO_LOCAL_DATE);
-        String query = "insert into student(id,first_name,last_name,city,average_score,gender,dob) values ("
+        String query = "insert into student(id,last_name,first_name,city,average_score,gender,dob) values ("
                 + student.getID() + ",'" + student.getLast_name() + "', '" + student.getFirst_name() + "', '" +
                 student.getCity() + "', " + student.getAverage_score() + ", '" + student.getGender() + "', '" +
                 dob + "')";
@@ -55,7 +54,7 @@ public class StudentDao {
     }
     public List<Student> findAll() throws SQLException {
         List<Student> listStudentFAll = new ArrayList<>();
-        String findAll = "select * from Student ;";
+        String findAll = "select * from Student;";
         Statement statement = getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(findAll);
         while (resultSet.next()) {
@@ -97,8 +96,8 @@ public class StudentDao {
     public boolean changePlace2Student(Student student1,Student student2)throws SQLException{
         String dob1 = student1.getDob().format(DateTimeFormatter.ISO_LOCAL_DATE);
         String dob2 = student2.getDob().format(DateTimeFormatter.ISO_LOCAL_DATE);
-        String modify1="update Student set first_name='"+student2.getLast_name()+"',last_name='"+student2.getFirst_name()+"',city='"+student2.getCity()+"',average_score='"+student2.getAverage_score()+"',gender='"+student2.getGender()+"',dob='"+dob2+"' where id='"+student1.getID()+"';";
-        String modify2="update Student set first_name='"+student1.getLast_name()+"',last_name='"+student1.getFirst_name()+"',city='"+student1.getCity()+"',average_score='"+student1.getAverage_score()+"',gender='"+student1.getGender()+"',dob='"+dob1+"' where id='"+student2.getID()+"';";
+        String modify1="update Student set last_name='"+student2.getLast_name()+"',first_name='"+student2.getFirst_name()+"',city='"+student2.getCity()+"',average_score='"+student2.getAverage_score()+"',gender='"+student2.getGender()+"',dob='"+dob2+"' where id='"+student1.getID()+"';";
+        String modify2="update Student set last_name='"+student1.getLast_name()+"',first_name='"+student1.getFirst_name()+"',city='"+student1.getCity()+"',average_score='"+student1.getAverage_score()+"',gender='"+student1.getGender()+"',dob='"+dob1+"' where id='"+student2.getID()+"';";
         Statement statement= getConnection().createStatement();
         int resultSet1=statement.executeUpdate(modify1);
         int resultSet2=statement.executeUpdate(modify2);
